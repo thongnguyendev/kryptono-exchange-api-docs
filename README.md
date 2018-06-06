@@ -66,6 +66,90 @@ NONE
 {}
 ```
 
+### Get Account's detail
+```
+GET /v1/account/details
+```
+
+**Request Params:**
+NONE
+
+**Response:**
+```javascript
+{
+    "account_id": "5377f2e2-4b0e-4b15-be17-28092ae0c346",
+    "email": "ahihi2@mailinator.com",
+    "phone": null,
+    "enable_google_2fa": true,
+    "status": "offline",
+    "create_at": 1524567654822,
+    "nick_name": "Ahihi 2",
+    "chat_id": "29371524567654821@kryptono.exchange",
+    "chat_password": "VMyBENGYrp",
+    "banks": [],
+    "country": "US",
+    "language": "en",
+    "kyc_status": null,
+    "kyc_level": "level1",
+    "last_login_history": {
+        "id": {
+            "timestamp": 1528199468,
+            "machineIdentifier": 8990639,
+            "processIdentifier": 20156,
+            "counter": 7772354,
+            "time": 1528199468000,
+            "date": 1528199468000,
+            "timeSecond": 1528199468
+        },
+        "account_id": "5377f2e2-4b0e-4b15-be17-28092ae0c346",
+        "nick_name": "Ahihi 2",
+        "email": "ahihi2@mailinator.com",
+        "ip_address": "14.161.20.103",
+        "login_at": 1528199468073,
+        "os_name": "Mac OS X",
+        "browser_name": "Chrome",
+        "country": "Vietnam",
+        "city": "Ho Chi Minh City",
+        "sentEmail": true
+    },
+    "commission_status": true,
+    "account_kyc": null,
+    "kyc_reject_infos": [],
+    "allow_order": 1,
+    "disable_withdraw": 0,
+    "referral_id": "XWSMQ0",
+    "favorite_pairs": [
+        "KNOW_ETH"
+    ],
+    "chat_server": "wss://chat.kryptono.exchange:5280/ws",
+    "exchange_fee": {
+        "standard_fee": "0.1",
+        "know_fee": "0.05"
+    }
+}
+```
+
+### Get Balance list
+```
+GET /v1/account/balances
+```
+**Request Params:**
+NONE
+
+**Response:**
+```javascript
+[
+    {
+        "currency_code": "BTC",
+        "address": "2MxctvXExQofAVqakPfBjKqVipfwTqwyQyF",
+        "total": "1000.00275",
+        "available": "994.5022",
+        "in_order": "5.50055"
+    }
+]
+```
+
+
 ### Create order
 ```
 POST /v1/order/add_order
@@ -259,3 +343,116 @@ order_side | STRING | NO | |
     ]
 }
 ```
+
+### Get Trade History
+```
+POST /v1/order/list/trade_history
+```
+**Request Body Description:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+limit | INTEGER | NO | Default is NO LIMIT |
+page | INTEGER | NO | Default is 0 |
+from_date | LONG | NO | |
+to_date | LONG | NO | |
+left | STRING | NO | |
+right | STRING | NO | |
+type | STRING | NO | |
+
+**Request Body:**
+```javascript
+{
+  "limit" : 10,
+  "page" : 0,
+  "from_date" : 1528277973947,
+  "to_date" : 1528277973947,
+  "left" : "KNOW",
+  "right" : "ETH",
+  "type" : "BUY"
+}
+```
+
+**Response:**
+```javascript
+{
+    "total": 100,	// total of pages
+    "list": [
+        {
+            "id": {
+                "timestamp": 1527488215,
+                "machineIdentifier": 8990639,
+                "processIdentifier": 29166,
+                "counter": 16093657,
+                "time": 1527488215000,
+                "date": 1527488215000,
+                "timeSecond": 1527488215
+            },
+            "restingAccountId": "5377f2e2-4b0e-4b15-be17-28092ae0c346",
+            "incomingAccountId": "5377f2e2-4b0e-4b15-be17-28092ae0c346",
+            "symbol": "GTO_BTC",
+            "restingOrderId": "dc8a092e-ab6e-4856-9b95-93eb1d4732ad",
+            "incomingOrderId": "6bc57c6d-4552-4ebb-ae9e-5fe75900b300",
+            "incomingSide": "BUY",
+            "price": "0.00003402",
+            "executedQuantity": "500",
+            "remainingQuantity": "400",
+            "matchingTime": 1527488214898,
+            "resting_fee": "0.59885764 KNOW",
+            "incoming_fee": "0.66250000 KNOW",
+            "total": "0.01701000 BTC"
+        }
+    ]
+}
+```
+
+### Get Order's Trade History
+```
+POST /v1/order/order_trade_detail
+```
+**Request Body Description:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+order_id | STRING | YES | |
+
+**Request Body:**
+```javascript
+{
+  "order_id" : "dc8a092e-ab6e-4856-9b95-93eb1d4732ad"
+}
+```
+
+**Response:**
+```javascript
+{
+    "total": -1,
+    "list": [
+        {
+            "id": {
+                "timestamp": 1527488215,
+                "machineIdentifier": 8990639,
+                "processIdentifier": 29166,
+                "counter": 16093657,
+                "time": 1527488215000,
+                "date": 1527488215000,
+                "timeSecond": 1527488215
+            },
+            "restingAccountId": "5377f2e2-4b0e-4b15-be17-28092ae0c346",
+            "incomingAccountId": "5377f2e2-4b0e-4b15-be17-28092ae0c346",
+            "symbol": "GTO_BTC",
+            "restingOrderId": "dc8a092e-ab6e-4856-9b95-93eb1d4732ad",
+            "incomingOrderId": "6bc57c6d-4552-4ebb-ae9e-5fe75900b300",
+            "incomingSide": "BUY",
+            "price": "0.00003402",
+            "executedQuantity": "500",
+            "remainingQuantity": "400",
+            "matchingTime": 1527488214898,
+            "resting_fee": "0.59885764 KNOW",
+            "incoming_fee": "0.66250000 KNOW",
+            "total": "0.01701000 BTC"
+        }
+    ]
+}
+```
+

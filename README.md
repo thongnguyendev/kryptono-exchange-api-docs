@@ -16,7 +16,7 @@
 }
 ```
 
-* For `GET` endpoints, no parameter is required.
+* For `GET` endpoints, the parameters may be sent as a `request param` or not.
 * For `POST`, and `DELETE` endpoints, the parameters must be sent as a `request body` with content type
   `application/json`.
 * Parameters may be sent in any order.

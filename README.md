@@ -4,9 +4,10 @@
 * All endpoints return either a JSON object or array.
 * Data is returned in **descending** order. Newest first, oldest last.
 * All time and timestamp related fields are in milliseconds.
+* The limit for number of requests per minute is 100
 * HTTP `404` return codes is used for data not found.
 * HTTP `400` return codes is used for invalid data.
-* HTTP `406` return codes is used for not acceptable data.
+* HTTP `406` return codes is used for not acceptable data or the api key already reach maximum number of requests per minute.
 * HTTP `500` return codes is used for invalid format request or wrong from server's side.
 * Any endpoint can retun an ERROR; the error payload is as follows:
 ```javascript

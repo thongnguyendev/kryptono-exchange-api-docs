@@ -149,7 +149,7 @@ NONE
 ]
 ```
 
-### Get Market Price
+### Get Market Price (Updated every 15 seconds)
 ```
 GET /v1/market_price?symbol=KNOW_BTC
 ```
@@ -263,7 +263,7 @@ order_symbol | STRING | YES | |
 ```javascript
 {
   "order_id" : "02140bef-0c98-4997-9412-9e7ca6f1cc0e",
-	"order_symbol" : "KNOW_ETH"
+  "order_symbol" : "KNOW_ETH"
 }
 ```
 
@@ -271,7 +271,7 @@ order_symbol | STRING | YES | |
 ```javascript
 {
   "order_id" : "02140bef-0c98-4997-9412-9e7ca6f1cc0e",
-	"order_symbol" : "KNOW_ETH"
+  "order_symbol" : "KNOW_ETH"
 }
 ```
 

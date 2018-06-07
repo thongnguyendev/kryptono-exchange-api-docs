@@ -149,6 +149,58 @@ NONE
 ]
 ```
 
+### Get Market Price
+```
+GET /v1/market_price?symbol=KNOW_BTC
+```
+**Request Params:**
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | NO | Default is all of symbols |
+
+**Response:**
+```javascript
+[
+    {
+        "symbol": "KNOW_BTC",
+        "price": "0.00010677",
+        "updated_time": 1528347586009
+    }
+]
+```
+
+### Get Exchange Information
+```
+GET /v1/exchange_info
+```
+**Request Params:**
+NONE
+
+**Response:**
+```javascript
+{
+    "base_currencies": [
+        {
+            "currency_code": "BTC",
+            "minimum_total_order": "0.001"
+        }
+    ],
+    "coins": [
+        {
+            "currency_code": "KNOW",
+            "name": "Know",
+            "minimum_order_amount": "1"
+        }
+    ],
+    "symbols": [
+        {
+            "symbol": "KNOW_BTC",
+            "amount_limit_decimal": 0,
+            "price_limit_decimal": 8
+        }
+    ]
+}
+```
 
 ### Create order
 ```

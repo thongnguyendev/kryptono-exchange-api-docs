@@ -150,14 +150,14 @@ NONE
 ]
 ```
 
-### Get Market Price (Updated every 15 seconds)
+### Get Market Price (Updated every 1 second)
 ```
 GET /v1/market_price?symbol=KNOW_BTC
 ```
 **Request Params:**
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
-symbol | STRING | NO | Default is all of symbols |
+symbol | STRING | NO | Default is all of symbols
 
 **Response:**
 ```javascript

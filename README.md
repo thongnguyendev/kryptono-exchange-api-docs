@@ -1,4 +1,4 @@
-# Public Rest API for Kryptono Exchange (2018-06-07)
+# Public Rest API for Kryptono Exchange (2018-06-09)
 # General API Information
 * The base endpoint is: **https://kryptono.exchange/k/api/**
 * All endpoints return either a JSON object or array.

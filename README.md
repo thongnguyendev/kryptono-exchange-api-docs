@@ -155,6 +155,7 @@ NONE
 GET /v1/market_price?symbol=KNOW_BTC
 ```
 **Request Params:**
+
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
 symbol | STRING | NO | Default is all of symbols

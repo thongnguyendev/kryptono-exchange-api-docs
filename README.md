@@ -2,7 +2,7 @@
 ## Update History
 ### June 18, 2018
 * Support Market type for create order
-* Provide api/websocket for market information, include order books and transaction history (#get-market-information)
+* Provide api/websocket for market information, include order books and transaction history: [Get Market Information](#get-market-information)
 
 
 # General API Information

@@ -1,4 +1,10 @@
 # Public Rest API for Kryptono Exchange (June 18, 2018)
+## Update History
+### June 18, 2018
+* Support Market type for create order
+* Provide api/websocket for market information, include order books and transaction history (#get-market-information)
+
+
 # General API Information
 * The base endpoint is: **https://p.kryptono.exchange/k/api/**
 * All endpoints return either a JSON object or array.

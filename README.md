@@ -251,7 +251,7 @@ symbol | STRING | YES | |
 
 **Response:**
 ```
-GET wss://engines.kryptono.exchange/ws/v1/ht/KNOW_BTC
+GET wss://engines.kryptono.exchange/ws/v1/ht/KNOW_USDT
 ```
 ```
 {
@@ -338,7 +338,7 @@ symbol | STRING | YES | |
 
 **Response:**
 ```
-GET wss://engines.kryptono.exchange/ws/v1/dp/KNOW_BTC
+GET wss://engines.kryptono.exchange/ws/v1/dp/KNOW_USDT
 ```
 ```
 {

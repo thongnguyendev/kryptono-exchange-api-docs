@@ -1,4 +1,4 @@
-# Public Rest API for Kryptono Exchange (June 21, 2018)
+# Public Rest API for Kryptono Exchange (June 22, 2018)
 ## Update History
 ### June 21, 2018
 * Update Get Order History apis: [Get Open Orders](#get-open-orders) and [Get Order History](#get-order-history)
@@ -515,13 +515,15 @@ POST /v1/order/list/open_order
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
-limit | INTEGER | NO | Default and Maximum are 500 |
+limit | INTEGER | NO | Default and Maximum are 20 |
+page | INTEGER | NO | Default and first page are 0 |
 symbol | STRING | YES | |
 
 **Request Body:**
 ```javascript
 {
   "limit" : 10,
+  "page" : 0,
   "symbol" : "KNOW_BTC"
 }
 ```
@@ -529,7 +531,7 @@ symbol | STRING | YES | |
 **Response:**
 ```javascript
 {
-    "total": 10,  // total number of records
+    "total": 5,  // total number of pages
     "list": [
         {
             "order_id": "02140bef-0c98-4997-9412-9e7ca6f1cc0e",
@@ -550,6 +552,13 @@ symbol | STRING | YES | |
 }
 ```
 
+**Response Description:**
+
+Name | Type | Description
+------------ | ------------ | ------------ 
+total | INTEGER | Number of pages, only returned in the first page request, other page request returned -1 |
+
+
 ### Get Order History
 ```
 POST /v1/order/list/order_history
@@ -559,13 +568,15 @@ POST /v1/order/list/order_history
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
-limit | INTEGER | NO | Default and Maximum are 500 |
+limit | INTEGER | NO | Default and Maximum are 20 |
+page | INTEGER | NO | Default and first page are 0 |
 symbol | STRING | YES | |
 
 **Request Body:**
 ```javascript
 {
   "limit" : 10,
+  "page" : 0,
   "symbol" : "KNOW_BTC"
 }
 ```
@@ -573,7 +584,7 @@ symbol | STRING | YES | |
 **Response:**
 ```javascript
 {
-    "total": 10,  // total number of records
+    "total": 10,  // total number of pages
     "list": [
         {
             "order_id": "02140bef-0c98-4997-9412-9e7ca6f1cc0e",
@@ -593,6 +604,13 @@ symbol | STRING | YES | |
     ]
 }
 ```
+
+**Response Description:**
+
+Name | Type | Description
+------------ | ------------ | ------------ 
+total | INTEGER | Number of pages, only returned in the first page request, other page request returned -1 |
+
 
 ### Get Trade History
 ```

@@ -1,5 +1,8 @@
-# Public Rest API for Kryptono Exchange (June 22, 2018)
+# Public Rest API for Kryptono Exchange (July 4, 2018)
 ## Update History
+### July 4, 2018
+* Update API v2
+
 ### June 21, 2018
 * Update Get Order History apis: [Get Open Orders](#get-open-orders) and [Get Order History](#get-order-history)
 * Add Get Order Detail api [Get Order Detail](#get-order-detail)
@@ -10,14 +13,15 @@
 
 
 # General API Information
-* The base endpoint is: **https://p.kryptono.exchange/k/api/**
 * All endpoints return either a JSON object or array.
 * Data is returned in **descending** order. Newest first, oldest last.
 * All time and timestamp related fields are in milliseconds.
-* The limit for number of requests per minute is 100
-* HTTP `404` return codes is used for data not found.
+* The limit for number of requests per minute is 1000.
 * HTTP `400` return codes is used for invalid data.
-* HTTP `406` return codes is used for not acceptable data or the api key already reach maximum number of requests per minute.
+* HTTP `401` return codes is used for unauthorized request.
+* HTTP `404` return codes is used for data not found.
+* HTTP `406` return codes is used for not acceptable data.
+* HTTP `429` return code is used when breaking a request rate limit.
 * HTTP `500` return codes is used for invalid format request or wrong from server's side.
 * Any endpoint can retun an ERROR; the error payload is as follows:
 ```javascript
@@ -33,6 +37,125 @@
 * Parameters may be sent in any order.
 
 
+# LIMITS
+* The `/api/v2/exchange-info` `rate_limits` array contains objects related to the exchange's `REQUESTS` rate limits.
+* A `429` will be returned when either rather limit is violated.
+* Each route has a `weight` which determines for the number of requests each endpoint counts for. Heavier endpoints and endpoints that do operations on multiple symbols will have a heavier `weight`.
+* When a `429` is recieved, it's your obligation as an API to back off and not spam the API.
+
+
+# Endpoint security type
+* Each endpoint has a security type that determines the how you will interact with it.
+* API-keys are passed into the Rest API via the `Authorization` header.
+* Signature are passed into the Rest API via the `Signature` header.
+* API-keys and secret-keys are **case sensitive.**
+* API-keys can be configured to only access certain types of secure endpoints. For example, one API-key could be used for TRADE only, while another API-key can access everything except for TRADE routes.
+* By default, API-keys can access all secure routes.
+
+Security Type | Description
+------------ | ------------
+NONE | Endpoint can be accessed freely.
+MARKET_DATA | Endpoint can be accessed freely.
+TRADE | Endpoint requires sending a valid API-Key and signature.
+USER_DATA | Endpoint requires sending a valid API-Key and signature.
+
+* `TRADE` and `USER_DATA` endpoints are `SIGNED` endpoints.
+
+
+# SIGNED (TRADE and USER_DATA) Endpoint security
+* `SIGNED` endpoints require an additional parameter, `Signature`, to be
+  sent in the header.
+* Endpoints use `HMAC SHA256` signatures. The `HMAC SHA256 signature` is a keyed `HMAC SHA256` operation.
+  Use your `secretKey` as the key and `totalParams` as the value for the HMAC operation.
+* The `signature` is **not case sensitive**.
+* `totalParams` is defined as the `query string` or `request body`.
+
+## Timing security
+* A `SIGNED` endpoint also requires a parameter, `timestamp`, to be sent which
+  should be the millisecond timestamp of when the request was created and sent.
+* An additional parameter, `recvWindow`, may be sent to specific the number of
+  milliseconds after `timestamp` the request is valid for. If `recvWindow`
+  is not sent, **it defaults to 5000**.
+* The logic is as follows:
+  ```javascript
+  if (timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow) {
+    // process request
+  } else {
+    // reject request
+  }
+  ```
+
+**Serious trading is about timing.** Networks can be unstable and unreliable,
+which can lead to requests taking varying amounts of time to reach the
+servers. With `recvWindow`, you can specify that the request must be
+processed within a certain number of milliseconds or be rejected by the
+server.
+
+
+**Tt recommended to use a small recvWindow of 5000 or less!**
+
+
+## SIGNED Endpoint Examples
+Here is a step-by-step example of how to send a vaild signed payload from the
+Linux command line using `echo`, `openssl`, and `curl`.
+
+Key | Value
+------------ | ------------
+apiKey | WC9NeS96R2lZZStMYUEzQndRbUFEcm5ESkh2R1Rvckd6c3ExZ2ZKS0svYlBKNGU1RzVpLzFBQjJqc0pyYVdoRzN0U2Y2U0ducUY4RE83VmIrK1lVOTBmQ0tqNW1EcWVOZXFMUFpTN0lnYXM9
+secretKey | R0Ml3XQpUvowNe3Su+53q53GVAPh/dYWOGXWIBuPDUw=
+
+## Example 1: As a query string
+* `GET` `/api/v2/account/details`
+
+Parameter | Value
+------------ | ------------
+timestamp | 1530532714999
+recvWindow | 5000
+
+* **Query string:**
+  ```
+  timestamp=1530532714999&recvWindow=5000
+  ```
+* **HMAC SHA256 signature:**
+  ```
+  [linux]$ echo -n 'timestamp=1530532714999&recvWindow=5000' | openssl dgst -sha256 -hmac 'R0Ml3XQpUvowNe3Su+53q53GVAPh/dYWOGXWIBuPDUw='
+  (stdin)= dda4cb640ddc8ff870058b30b5b9faf618f5e465066fcaa906f0a533afc17106
+  ```
+* **curl command:**
+  ```
+  (HMAC SHA256)
+  [linux]$ curl -X GET 'https://p.kryptono.exchange/k/api/v2/account/details?timestamp=1530532714999&recvWindow=5000' -H 'Authorization: WC9NeS96R2lZZStMYUEzQndRbUFEcm5ESkh2R1Rvckd6c3ExZ2ZKS0svYlBKNGU1RzVpLzFBQjJqc0pyYVdoRzN0U2Y2U0ducUY4RE83VmIrK1lVOTBmQ0tqNW1EcWVOZXFMUFpTN0lnYXM9' -H 'Signature: dda4cb640ddc8ff870058b30b5b9faf618f5e465066fcaa906f0a533afc17106' -H 'X-Requested-With: XMLHttpRequest'
+  ```
+
+## Example 2: As a request body
+* `POST` `/api/v2/order/test`
+
+Parameter | Value
+------------ | ------------
+order_symbol | KNOW_BTC
+order_side | BUY
+order_price | 0.00001234
+order_size | 1234
+type | limit
+timestamp | 1530532714999
+recvWindow | 5000
+
+* **Request body as json string**
+  ```
+  {"order_symbol":"KNOW_BTC","order_side":"BUY","order_price":"0.00001234","order_size":"1234","type":"limit","timestamp":1530532714999,"recvWindow":5000}
+  ```
+* **HMAC SHA256 signature:**
+  ```
+  [linux]$ echo -n '{"order_symbol":"KNOW_BTC","order_side":"BUY","order_price":"0.00001234","order_size":"1234","type":"limit","timestamp":1530532714999,"recvWindow":5000}' | openssl dgst -sha256 -hmac 'R0Ml3XQpUvowNe3Su+53q53GVAPh/dYWOGXWIBuPDUw='
+  (stdin)= 89c3482ce87fd6cce46a2c4452222a87be1a020f14257da894b55a4366d2a914
+  ```
+* **curl command:**
+  ```
+  (HMAC SHA256)
+  [linux]$ curl -X POST https://p.kryptono.exchange/k/api/v2/order/test -H 'Authorization: WC9NeS96R2lZZStMYUEzQndRbUFEcm5ESkh2R1Rvckd6c3ExZ2ZKS0svYlBKNGU1RzVpLzFBQjJqc0pyYVdoRzN0U2Y2U0ducUY4RE83VmIrK1lVOTBmQ0tqNW1EcWVOZXFMUFpTN0lnYXM9' -H 'Signature: 89c3482ce87fd6cce46a2c4452222a87be1a020f14257da894b55a4366d2a914' -H 'Content-Type: application/json' -H 'X-Requested-With: XMLHttpRequest' -d '{"order_symbol":"KNOW_BTC","order_side":"BUY","order_price":"0.00001234","order_size":"1234","type":"limit","timestamp":1530532714999,"recvWindow":5000}'
+  ```
+  
+  
 # Public API Endpoints
 ## ENUM definitions
 **Order status:**
@@ -56,26 +179,200 @@
 * SELL
 
 ## Header requirements
-Name | Value
+Name | Value | Note
 --------------- | ---------------
-Content-Type | application/json
-X-Requested-With | XMLHttpRequest
-Authorization | Your_api_key
+Content-Type | application/json | 
+X-Requested-With | XMLHttpRequest | 
+Authorization | Your_api_key | 
+Signature | signature | Required for SIGNED Endpoints
 
 ## General endpoints
+The base endpoint is: https://p.kryptono.exchange/k/
+
 ### Test connectivity
 ```
-GET /v1/ping
+GET /api/v2/ping
 ```
 Test connectivity to the Rest API.
 
-**Parameters:**
-NONE
+**Weight:** 1
+
+**Parameters:** NONE
 
 **Response:**
 ```javascript
-{}
+{
+    "result": true
+}
 ```
+
+### Check server time
+```
+GET /api/v2/time
+```
+Test connectivity to the Rest API and get the current server time.
+
+**Weight:** 1
+
+**Parameters:** NONE
+
+**Response:**
+```javascript
+{
+    "server_time": 1530682662257
+}
+```
+
+### Exchange information
+```
+GET /api/v2/exchange-info
+```
+Current exchange trading rules and symbol information
+
+**Weight:** 1
+
+**Parameters:** NONE
+
+**Response:**
+```javascript
+{
+    "timezone": "UTC",
+    "server_time": 1530683054384,
+    "rate_limits": [
+        {
+            "type": "REQUESTS",
+            "interval": "MINUTE",
+            "limit": 1000
+        }
+    ],
+    "base_currencies": [
+        {
+            "currency_code": "KNOW",
+            "minimum_total_order": "100"
+        }
+    ],
+    "coins": [
+        {
+            "currency_code": "USDT",
+            "name": "Tether",
+            "minimum_order_amount": "1"
+        }
+    ],
+    "symbols": [
+        {
+            "symbol": "GTO_ETH",
+            "amount_limit_decimal": 0,
+            "price_limit_decimal": 8
+        }
+    ]
+}
+```
+
+### Market price
+```
+GET /api/v2/market-price
+```
+Get market price for specific symbol or all symbols
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | NO | Default is all symbols
+
+**Response:**
+```javascript
+[
+    {
+        "symbol": "GTO_BTC",
+        "price": "0.00002542",
+        "updated_time": 1530682938651
+    }
+]
+```
+
+## Market data endpoints
+The base endpoint is: https://engines.kryptono.exchange/
+
+### Trade History
+```
+GET /api/v1/ht
+```
+Get Trade history for specific symbol
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES | 
+
+**If symbol is not sent, an empty response will be returned.**
+
+**Resoonse:**
+```
+{
+    "symbol":"KNOW_BTC",
+    "limit":100,
+    "history":[
+        {
+            "id":139638,
+            "price":"0.00001723",
+            "qty":"81.00000000",
+            "isBuyerMaker":false,
+            "time":1529262196270
+        }
+    ],
+    "time":1529298130192
+}
+```
+
+### Order Book
+```
+GET /api/v1/dp
+```
+Get order book (depth)
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES | 
+
+**If symbol is not sent, an empty response will be returned.**
+
+**Response:**
+```
+{
+    "symbol" : "KNOW_BTC",
+    "limit" : 100,
+    "asks" : [
+        [
+            "0.00001850",   // price
+            "69.00000000"   // size
+        ]
+    ],
+    "bids" : [
+        [
+            "0.00001651",       // price
+            "11186.00000000"    // size
+        ]
+    ]
+    "time" : 1529298130192
+}
+```
+
+
+
+
+
+
+
 
 ### Get Account's detail
 ```
@@ -725,4 +1022,3 @@ order_id | STRING | YES | |
     ]
 }
 ```
-

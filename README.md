@@ -172,7 +172,7 @@ recvWindow | 5000
 ## Header requirements
 
 Name | Value | Note
---------------- | ---------------
+--------------- | --------------- | ---------------
 Content-Type | application/json | 
 X-Requested-With | XMLHttpRequest | 
 Authorization | Your_api_key | 
@@ -567,6 +567,7 @@ recvWindow | LONG | NO |
 POST /api/v2/order/list/open     (HMAC SHA256)
 ```
 Get current open orders for specific symbol: OPEN and CANCELING
+
 **You can only get 1000 orders maximum. Use `/api/v2/order/list/all` to get more.**
 
 **Weight:** 1
@@ -630,6 +631,7 @@ total | INTEGER | Number of pages, only returned in the first page request, othe
 POST /api/v2/order/list/completed     (HMAC SHA256)
 ```
 Get completed orders for specific symbol: FILLED, PARTIAL_FILL and CANCELED
+
 **You can only get 1000 orders maximum. Use `/api/v2/order/list/all` to get more.**
 
 **Weight:** 1

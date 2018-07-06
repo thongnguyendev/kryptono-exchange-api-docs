@@ -1,4 +1,4 @@
-# Public Rest API for Kryptono Exchange (July 6, 2018)
+# Public Rest API v2 for Kryptono Exchange (July 6, 2018)
 ## Update History
 ### July 6, 2018
 * Update API v2

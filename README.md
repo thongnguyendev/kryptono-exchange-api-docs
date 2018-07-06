@@ -2,8 +2,8 @@
 
 ## Deprecation Notice
 
-**The Kryptono Exchange API v1 will be deprecated in July 20, 2018** 
-** Check out the new Kryptono Exchange API v2 here: https://github.com/thongnguyendev/kryptono-exchange-api-docs/blob/master/rest-api-v2.md **
+**The Kryptono Exchange API v1 will be deprecated in July 20, 2018**
+**Check out the new Kryptono Exchange API v2 here:** https://github.com/thongnguyendev/kryptono-exchange-api-docs/blob/master/rest-api-v2.md
 
 ## Update History
 ### June 21, 2018

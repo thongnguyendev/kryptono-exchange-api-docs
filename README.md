@@ -1,6 +1,6 @@
-# Public Rest API for Kryptono Exchange (July 4, 2018)
+# Public Rest API for Kryptono Exchange (July 6, 2018)
 ## Update History
-### July 4, 2018
+### July 6, 2018
 * Update API v2
 
 
@@ -23,7 +23,7 @@
 ```
 
 * For `GET` endpoints, the parameters may be sent as a `request param` or not.
-* For `POST`, and `DELETE` endpoints, the parameters must be sent as a `request body` with content type
+* For `POST` and `DELETE` endpoints, the parameters must be sent as a `request body` with content type
   `application/json`.
 * Parameters may be sent in any order.
 
@@ -259,6 +259,12 @@ Current exchange trading rules and symbol information
     ]
 }
 ```
+* `base_currencies` array contains all currencies that is in the right side of symbol. Eg: with symbol `KNOW_BTC`, base currency is `BTC`.
+* Each base currency has `minimum_order_total` value that defines the minimum total of an order. Eg: An order is created with `symbol=GTO_KNOW, amount=100, price=1.45` then `total=amount*price=145`, it is a valid order because `145 > 100`.
+* `coins` array contains all supported currencies in Krytono Exchange.
+* Each coin has `minimum_order_amount` value that defines the minimum amount of an order.
+* `symbols` array contains all supported symbol in Kryptono Exchange. 
+* Each symbol has 2 values `amount_limit_decimal` and `price_limit_decimal` that define the maximum no. of digit after decimal point of `amount` and `price`.
 
 ### Market price
 ```
@@ -304,7 +310,7 @@ symbol | STRING | YES |
 
 **If symbol is not sent, an empty response will be returned.**
 
-**Resoonse:**
+**Response:**
 ```
 {
     "symbol":"KNOW_BTC",
@@ -375,7 +381,7 @@ Send in a new order
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
 order_symbol | STRING | YES | |
-order_side | STRING | YES | [Order Side](#order-side:) |
+order_side | STRING | YES | |
 order_price | STRING | YES | |
 order_size | STRING | YES | |
 stop_price | STRING | NO | Used with `STOP_LOSS` and `TAKE_PROFIT` orders. |
@@ -654,7 +660,7 @@ Get all account orders for specific symbol.
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
 symbol | STRING | YES | |
-from_id | STRING | NO | Order Id to fetch from. |
+from_id | STRING | NO | Order Id to fetch from. Use `order_id` from response. |
 limit | INTEGER | NO | Default and Maximum are 50 |
 timestamp | LONG | YES | 
 recvWindow | LONG | NO |
@@ -705,7 +711,7 @@ Get account trade history for specific symbol.
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
 symbol | STRING | YES | |
-from_id | STRING | NO | Hex Id to fetch from. |
+from_id | STRING | NO | Hex Id to fetch from. Use `hex_id` from response. |
 limit | INTEGER | NO | Default and Maximum are 50 |
 timestamp | LONG | YES | 
 recvWindow | LONG | NO |
